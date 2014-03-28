@@ -1,0 +1,21 @@
+[alias]
+        co = checkout
+        st = status -sb
+        cm = commit
+	cl = clone
+        unstage = reset HEAD --
+        last = log -1 HEAD
+        lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+        lga = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
+        lgn = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --numstat
+        dw = diff --word-diff
+	ds = diff --staged
+	dsw = diff --staged --word-diff
+	whatadded = log --diff-filter=A --
+	alias = config --get-regexp alias
+	fl = log -u
+	lt = describe --tags --abbrev=0
+	r = reset
+	r1 = reset HEAD^
+	r2 = reset HEAD^^
+	lastmessages = log --pretty=format:"%s" -n
