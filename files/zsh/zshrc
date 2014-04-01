@@ -102,8 +102,10 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 # Pyenv stuff
 # Use homebrew directory for pyenv
-export PYENV_ROOT=/usr/local/opt/pyenv
-eval "$(pyenv init -)"
+if command -v pyenv > /dev/null; then
+    export PYENV_ROOT=/usr/local/opt/pyenv
+    eval "$(pyenv init -)"
+fi
 
 # gnu coreutils stuff
 # use the coreutils commands with their normal names instead of with the g prefix
