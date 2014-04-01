@@ -83,9 +83,12 @@ alias routingtableall='netstat -nr'
 alias st='open -a /Applications/SourceTree.app'
 
 # Virtual Env stuff
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME
-source /usr/local/bin/virtualenvwrapper.sh
+VIRTUAL_ENV_WRAPPER_PATH=/usr/local/bin/virtualenvwrapper.sh
+if [ -f $VIRTUAL_ENV_WRAPPER_PATH ]; then
+    export WORKON_HOME=$HOME/.virtualenvs
+    export PROJECT_HOME=$HOME
+    source $VIRTUAL_ENV_WRAPPER_PATH
+fi
 
 # Commands to get terminal tabs to open in the same working directory
 precmd () {print -Pn "\e]2; %~/ \a"}
