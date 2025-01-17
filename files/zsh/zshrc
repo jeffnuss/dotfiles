@@ -7,7 +7,7 @@ ZSH_THEME="jeff"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-plugins=(vi-mode git-flow git-extras brew pip django fabric npm gem heroku rvm adb pod bower history-substring-search)
+plugins=(vi-mode git-flow git-extras brew pip django fabric npm gem heroku rvm adb pod bower history-substring-search go lein foreman yo)
 
 # Options
 # Set to this to use case-sensitive completion
@@ -34,7 +34,8 @@ if [ -f ~/.local-settings ]; then
 fi
 
 # Custom key bindings
-# Reverse history search direction
+# Serach history
+bindkey '^R' history-incremental-pattern-search-backward
 bindkey '^S' history-incremental-pattern-search-forward
 # Add emacs key bindings that I'm used to
 bindkey '^A' beginning-of-line
@@ -52,6 +53,11 @@ alias getipwired='ipconfig getifaddr en0'
 alias getipextern='curl icanhazip.com'
 alias getgateway='netstat -nr | grep default'
 alias bower='noglob bower'
+alias redisdev='redis-server /usr/local/etc/redis.conf'
+alias gitjk="fc -l -10 | tail -r | gitjk_cmd"
+alias g="git"
+alias cleanpython="find . -name '*.pyc' -print0 | xargs -0 rm"
+#alias vim="vimr"
 
 whichll() {
 	which $* | xargs ls -lG
@@ -62,7 +68,7 @@ alias ls='ls -G'
 alias lla='ls -la'
 
 # List all the processes that are listening and on what port
-alias listening='lsof -i | grep LISTEN'
+alias listening='lsof -i -n -P | grep LISTEN'
 
 # See why computer won't sleep
 alias whyunosleep='pmset -g assertions'
@@ -80,7 +86,7 @@ alias routingtable='netstat -nr -f inet'
 alias routingtableall='netstat -nr'
 
 # Custom app open stuff
-alias st='open -a /Applications/SourceTree.app'
+alias st='open -a /Applications/SourceTree.app ./'
 
 # Virtual Env stuff
 VIRTUAL_ENV_WRAPPER_PATH=/usr/local/bin/virtualenvwrapper.sh
@@ -105,13 +111,18 @@ export HOMEBREW_CASK_OPTS="--appdir=/Applications"
 
 # Pyenv stuff
 # Use homebrew directory for pyenv
-if command -v pyenv > /dev/null; then
-    export PYENV_ROOT=/usr/local/opt/pyenv
-    eval "$(pyenv init -)"
-fi
+#if command -v pyenv > /dev/null; then
+    #export PYENV_ROOT=/usr/local/opt/pyenv
+    #eval "$(pyenv init -)"
+#fi
+#if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
 
 # gnu coreutils stuff
 # use the coreutils commands with their normal names instead of with the g prefix
 #PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
 # access the coreutils man pages with their normal names
 #MANPATH="/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
+# Go stuff
+export PATH=$PATH:/usr/local/Cellar/go/1.2.1/libexec/bin
+export GOPATH=$HOME/dev/go-shenanigans:$HOME/dev/project-euler/go

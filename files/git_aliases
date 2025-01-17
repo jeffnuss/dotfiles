@@ -19,3 +19,10 @@
 	r1 = reset HEAD^
 	r2 = reset HEAD^^
 	lastmessages = log --pretty=format:"%s" -n
+	br =  branch
+	ls = ls-files
+	pullrequest = push -u origin HEAD
+	delete-unused-branches = "!f() { git branch | xargs git branch -d; }; f"
+	mt = mergetool
+	ane = commit --amend --no-edit
+

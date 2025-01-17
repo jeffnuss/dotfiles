@@ -1,53 +1,189 @@
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'toyamarinyon/vim-swift'
+Plugin 'vim-scripts/vim-surround'
+Plugin 'airblade/vim-gitgutter'
+" Make sure that when you compile this, unlink the homebrew python (if you're " using it) because VimR is compiling using system python
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'rking/ag.vim'
+Plugin 'jiangmiao/auto-pairs'
+Plugin 'elzr/vim-json'
+Plugin 'ntpeters/vim-better-whitespace'
+Plugin 'tpope/vim-jdaddy'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" YouCompleteMe debug logging
+"let g:ycm_path_to_python_interpreter = '/usr/bin/python'
+
+" Settings
 set number
 syntax on
 set history=100
 set ruler
 set cindent
-set smartindent
 set autoindent
 set cinkeys=0{,0},:,0#,!^F
+set smartcase
+set ignorecase
 
-"mnicppcomplete options
-map <C-x><C-x><C-T> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q -f ~/.vim/commontags /usr/include <CR><CR>
-set tags+=~/.vim/commontags
- 
-" --- OmniCppComplete ---
-" -- required --
-set nocp " non vi compatible mode
-filetype plugin on " enable plugins
-   
-" -- optional --
-" auto close options when exiting insert mode or moving away
-autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
-set completeopt=menu,menuone
-    
-" -- configs --
-let OmniCpp_MayCompleteDot = 1 " autocomplete with .
-let OmniCpp_MayCompleteArrow = 1 " autocomplete with ->
-let OmniCpp_MayCompleteScope = 1 " autocomplete with ::
-let OmniCpp_SelectFirstItem = 2 " select first item (but don't insert)
-let OmniCpp_NamespaceSearch = 2 " search namespaces in this and included
-"    files
-let OmniCpp_ShowPrototypeInAbbr = 1 " show function prototype (i.e.
-"    parameters) in popup window
-let OmniCpp_LocalSearchDecl = 1 " don't require special style of function
-"    opening braces
+" Highlight search
+set hlsearch
+set incsearch
+" Press Space to turn off highlighting and clear any message already displayed.
+:nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 
-" -- ctags --
-" map <ctrl>+F12 to generate ctags for current folder:
-map <C-x><C-t> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR>
-" add current directory's generated tags file to available tags
-set tags+=./tags
-      
-" Setup the tab key to do autocompletion
-function! CompleteTab()
-    let prec = strpart( getline('.'), 0, col('.')-1 )
-    if prec =~ '^\s*$' || prec =~ '\s$'
-        return "\<tab>"
-    else
-        return "\<c-x>\<c-o>"
-    endif
-endfunction
-                       
-inoremap <tab> <c-r>=CompleteTab()<cr>
+" Set relative line numbers as default
+set rnu
+
+" Make a 2-way toggle between absolute and relative line numbers
+function! NumberToggle()
+  if(&rnu == 0)
+    set rnu
+    "highlight LineNr ctermfg=yellow
+  else
+    set nornu
+  endif
+endfunc
+nnoremap <C-\> :call NumberToggle()<cr>
+
+
+" Bubble single lines (kicks butt)
+" http://vimcasts.org/episodes/bubbling-text/
+nmap <C-Up> ddkP
+nmap <C-Down> ddp
+
+" Bubble multiple lines
+vmap <C-Up> xkP`[V`]
+vmap <C-Down> xp`[V`]
+
+filetype plugin indent on
+" show existing tab with 4 spaces width
+set tabstop=4
+" when indenting with '>', use 4 spaces width
+set shiftwidth=4
+" On pressing tab, insert 4 spaces
+set expandtab
+
+" vim-json folding
+setlocal foldmethod=syntax
+
+" More useful command-line completion
+set wildmenu
+
+" Auto-completion menu
+set wildmode=list:longest
+
+" Center window and cursor on current line
+set so=999
+
+" Disable warning about file being modified elsewhere
+set autoread
+
+" Vim Better Whitespace settings
+autocmd BufWritePre * StripWhitespace
+
+" Enable monokai color scheme
+syntax enable
+colorscheme monokai
+
+" cmd-\ for NERDcommenter comments
+vmap <D-/> \c<space>gv
+map <D-/> \c<space>
+imap <D-/> <esc>\c<space>
+
+" cmd-shift-f to search all files recursively
+map <D-F> :Ag
+imap <D-F> <esc> :Ag
+" Yank slected text and paste it after the Ag commend
+vmap <D-F> y<esc> :Ag <C-R>"
+
+" cmd-f to search this file
+map <D-f> /
+imap <D-f> <esc> /
+vmap <D-f> y<esc> / <C-R>"
+
+" Jump by 7 words
+noremap <S-w> 7w
+noremap <S-b> 7b
+
+" Watch and automatically reload .vimrc file
+augroup myvimrc
+    au!
+    au bufwritepost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC
+    "if has('gui_running') | so $MYVIMRC | endif
+augroup end
+
+autocmd FileType json setlocal shiftwidth=2 tabstop=2
+
+" Stop on capital letters.
+let g:camelchar = "A-Z"
+" Also stop on numbers.
+" let g:camelchar = "A-Z0-9"
+" Include '.' for class member, ',' for separator, ';' end-statement,
+" and <[< bracket starts and "'` quotes.
+let g:camelchar = "A-Z0-9.,;:{([`'\""
+nnoremap <silent><C-Left> :<C-u>call search('\C\<\<Bar>\%(^\<Bar>[^'.g:camelchar.']\@<=\)['.g:camelchar.']\<Bar>['.g:camelchar.']\ze\%([^'.g:camelchar.']\&\>\@!\)\<Bar>\%^','bW')<CR>
+nnoremap <silent><C-Right> :<C-u>call search('\C\<\<Bar>\%(^\<Bar>[^'.g:camelchar.']\@<=\)['.g:camelchar.']\<Bar>['.g:camelchar.']\ze\%([^'.g:camelchar.']\&\>\@!\)\<Bar>\%$','W')<CR>
+inoremap <silent><C-Left> <C-o>:call search('\C\<\<Bar>\%(^\<Bar>[^'.g:camelchar.']\@<=\)['.g:camelchar.']\<Bar>['.g:camelchar.']\ze\%([^'.g:camelchar.']\&\>\@!\)\<Bar>\%^','bW')<CR>
+inoremap <silent><C-Right> <C-o>:call search('\C\<\<Bar>\%(^\<Bar>[^'.g:camelchar.']\@<=\)['.g:camelchar.']\<Bar>['.g:camelchar.']\ze\%([^'.g:camelchar.']\&\>\@!\)\<Bar>\%$','W')<CR>
+vnoremap <silent><C-Left> :<C-U>call search('\C\<\<Bar>\%(^\<Bar>[^'.g:camelchar.']\@<=\)['.g:camelchar.']\<Bar>['.g:camelchar.']\ze\%([^'.g:camelchar.']\&\>\@!\)\<Bar>\%^','bW')<CR>v`>o
+vnoremap <silent><C-Right> <Esc>`>:<C-U>call search('\C\<\<Bar>\%(^\<Bar>[^'.g:camelchar.']\@<=\)['.g:camelchar.']\<Bar>['.g:camelchar.']\ze\%([^'.g:camelchar.']\&\>\@!\)\<Bar>\%$','W')<CR>v`<o
+
+""Omnicppcomplete options
+"map <C-x><C-x><C-T> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q -f ~/.vim/commontags /usr/include <CR><CR>
+"set tags+=~/.vim/commontags
+
+"" --- OmniCppComplete ---
+"" -- required --
+"set nocp " non vi compatible mode
+"filetype plugin on " enable plugins
+
+"" -- optional --
+"" auto close options when exiting insert mode or moving away
+"autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+"autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+"set completeopt=menu,menuone
+
+"" -- configs --
+"let OmniCpp_MayCompleteDot = 1 " autocomplete with .
+"let OmniCpp_MayCompleteArrow = 1 " autocomplete with ->
+"let OmniCpp_MayCompleteScope = 1 " autocomplete with ::
+"let OmniCpp_SelectFirstItem = 2 " select first item (but don't insert)
+"let OmniCpp_NamespaceSearch = 2 " search namespaces in this and included
+""    files
+"let OmniCpp_ShowPrototypeInAbbr = 1 " show function prototype (i.e.
+""    parameters) in popup window
+"let OmniCpp_LocalSearchDecl = 1 " don't require special style of function
+""    opening braces
+
+"" -- ctags --
+"" map <ctrl>+F12 to generate ctags for current folder:
+"map <C-x><C-t> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR><CR>
+"" add current directory's generated tags file to available tags
+"set tags+=./tags
+
+"" Setup the tab key to do autocompletion
+"function! CompleteTab()
+    "let prec = strpart( getline('.'), 0, col('.')-1 )
+    "if prec =~ '^\s*$' || prec =~ '\s$'
+        "return "\<tab>"
+    "else
+        "return "\<c-x>\<c-o>"
+    "endif
+"endfunction
+
+"inoremap <tab> <c-r>=CompleteTab()<cr>
